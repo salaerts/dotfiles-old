@@ -87,6 +87,7 @@ set wildmode=longest,list
 " COLOR
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 :set t_Co=256 " 256 colors
+let g:solarized_termcolors=256
 :set background=dark
 colorscheme solarized
 
