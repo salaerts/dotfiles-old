@@ -1,3 +1,4 @@
+" Disable vi-compatibility
 set nocompatible
 
 " Required for Vundle
@@ -22,6 +23,8 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'wincent/Command-T'
 Bundle 'tpope/vim-rails'
 Bundle 'bingaman/vim-sparkup'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'ervandew/supertab'
 
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
@@ -32,7 +35,10 @@ set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set autoindent
+" Always show the status line
 set laststatus=2
+" Necessary to show Unicode glyps
+set encoding=utf-8
 set showmatch
 set incsearch
 set hlsearch
@@ -50,6 +56,8 @@ set shell=bash
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
 set t_ti= t_te=
+" Explicitly tell Vin that the terminal supports 256 colors
+set t_Co=256
 " keep more context when scrolling off the end of a buffer
 set scrolloff=3
 " Store temporary files in a central spot
@@ -91,10 +99,15 @@ let g:solarized_termcolors=256
 :set background=dark
 colorscheme solarized
 
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline 
+let Powerline_symbols = 'fancy'
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 :set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+
+let localleader = ","
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MISC KEY MAPS
@@ -112,6 +125,11 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 " Edit or view files in same directory as current file
 map <leader>e :edit %%
 map <leader>v :view %%
+" Surround currently selected word with quotes
+nnoremap <Leader>" viw<esc>a"<esc>hbi"<esc>lel
+
+" Display taglist
+nnoremap <C-t> :TlistToggle<cr><c-w>j
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -125,13 +143,14 @@ function! InsertTabWrapper()
         return "\<c-p>"
     endif
 endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-inoremap <s-tab> <c-n>
+"inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+"inoremap <s-tab> <c-n>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Wrap visual selection in an HTML tag.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-vmap <Leader>w <Esc>:call VisualHTMLTagWrap()<CR>
+autocmd FileType xml,html,php vnoremap <Buffer> <localleader>w <Esc>:call VisualHTMLTagWrap()<CR>
+
 function! VisualHTMLTagWrap()
   let tag = input("Tag to wrap block: ")
   if len(tag) > 0
