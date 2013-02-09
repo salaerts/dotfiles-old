@@ -25,6 +25,12 @@ Bundle 'tpope/vim-rails'
 Bundle 'bingaman/vim-sparkup'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'ervandew/supertab'
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "honza/snipmate-snippets"
+Bundle 'garbas/vim-snipmate'
+
+Bundle 'salaerts/vim-indent'
 
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
@@ -84,7 +90,9 @@ set winheight=999
 " Use the default filetype settings, so that mail gets 'tw' set to 72,
 " 'cindent' is on in C files, etc.
 " Also load indent files, to automatically do language-dependent indenting.
-filetype plugin indent on     " required!
+filetype on
+filetype plugin on
+filetype indent on     " required!
 
 " Enhance command-line completion
 set wildmenu
