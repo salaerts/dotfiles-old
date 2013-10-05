@@ -20,22 +20,30 @@ Bundle 'gmarik/vundle'
 " Github repo plugins
 Bundle 'scrooloose/nerdtree'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'wincent/Command-T'
-Bundle 'tpope/vim-rails'
-Bundle 'bingaman/vim-sparkup'
-Bundle 'Lokaltog/vim-powerline'
+"Bundle 'wincent/Command-T' " TODO: CtrlP?
+"Bundle 'tpope/vim-rails'
+"Bundle 'bingaman/vim-sparkup'
 Bundle 'ervandew/supertab'
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "tomtom/tlib_vim"
-Bundle "honza/snipmate-snippets"
-Bundle 'garbas/vim-snipmate'
 
-Bundle 'salaerts/vim-indent'
+" Snippets for vim
+"Bundle 'MarcWeber/vim-addon-mw-utils'
+"Bundle 'tomtom/tlib_vim'
+"Bundle 'garbas/vim-snipmate'
+"Bundle 'honza/snipmate-snippets'
+
+"Bundle 'salaerts/vim-indent'
+
+" Fuzzy file search
+Bundle 'kien/ctrlp.vim'
+" Replacing or deleting surrounding symbols
+Bundle 'tpope/vim-surround'
+" Fancy status bar
+Bundle 'bling/vim-airline'
 
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
 " remember more commands and search history
-set history=10000
+
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -113,7 +121,7 @@ let Powerline_symbols = 'fancy'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+":set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 let localleader = ","
 
@@ -138,6 +146,10 @@ nnoremap <Leader>" viw<esc>a"<esc>hbi"<esc>lel
 
 " Display taglist
 nnoremap <C-t> :TlistToggle<cr><c-w>j
+
+" Find file
+nmap <leader>t :CtrlP<CR>
+nmap <leader>b :CtrlPBuffer<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
