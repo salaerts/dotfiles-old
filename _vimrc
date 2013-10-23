@@ -13,7 +13,7 @@ set number
 if has("unix")
     set rtp+=~/.vim/bundle/vundle/
 elseif has("win32")
-    set rtp+=~/vimfiles/bundle/vundle/
+    set rtp+=~/.vim/bundle/vundle/
 endif
 
 call vundle#rc()
