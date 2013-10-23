@@ -10,14 +10,14 @@ set esckeys
 " Line numbering
 set number
 
-" set rtp+=~/.vim/bundle/vundle/
-if has("win32")
-    set rtp+=~\vimfiles\bundle\vundle
-    call vundle#rc("$HOME/vimfiles/bundle")
-else
-    set rtp+=~/.vim/bundle/vundle
-    call vundle#rc()
+if has("unix")
+    set rtp+=~/.vim/bundle/vundle/
+elseif has("win32")
+    set rtp+=~/vimfiles/bundle/vundle/
 endif
+
+call vundle#rc()
+
 " let Vundle manage Vundle
 " required! 
 Bundle 'gmarik/vundle'
@@ -25,11 +25,31 @@ Bundle 'gmarik/vundle'
 " Github repo plugins
 Bundle 'scrooloose/nerdtree'
 Bundle 'altercation/vim-colors-solarized'
-"Bundle 'wincent/Command-T'
-"Bundle 'tpope/vim-rails'
-"Bundle 'bingaman/vim-sparkup'
-Bundle 'Lokaltog/vim-powerline'
-"Bundle 'ervandew/supertab'
+Bundle 'bingaman/vim-sparkup'
+" Bundle 'Lokaltog/vim-powerline' (TODO: obsolete?)
+Bundle 'ervandew/supertab'
+" Bundle 'MarcWeber/vim-addon-mw-utils'
+" Bundle 'tomtom/tlib_vim'
+" Bundle 'honza/snipmate-snippets'
+" Bundle 'garbas/vim-snipmate'
+
+Bundle 'bling/vim-airline'
+
+" Fuzzy file search
+Bundle 'kien/ctrlp.vim'
+
+" Syntax validation (make sure to install linters, checkers, ... into $PATH)
+Bundle 'scrooloose/syntastic'
+
+" Load unix-only plugins
+if has("unix")
+    Bundle 'wincent/Command-T'
+    Bundle 'tpope/vim-rails'
+    " Load win32-only plugins
+elseif has("win32")
+endif
+
+Bundle 'salaerts/vim-indent'
 
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
@@ -56,10 +76,12 @@ set switchbuf=useopen
 set numberwidth=5
 set showtabline=2
 set winwidth=79
-" This makes RVM work inside Vim. I have no idea why.
-if !has("win32")
+
+if has("unix")
+    " This makes RVM work inside Vim. I have no idea why.
     set shell=bash
 endif
+
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
 set t_ti= t_te=
@@ -67,10 +89,13 @@ set t_ti= t_te=
 set t_Co=256
 " keep more context when scrolling off the end of a buffer
 set scrolloff=3
-" Store temporary files in a central spot
-set backup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+
+if has("unix")
+    " Store temporary files in a central spot
+    set backup
+    set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+    set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+endif
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 " display incomplete commands
@@ -91,7 +116,9 @@ set winheight=999
 " Use the default filetype settings, so that mail gets 'tw' set to 72,
 " 'cindent' is on in C files, etc.
 " Also load indent files, to automatically do language-dependent indenting.
-filetype plugin indent on     " required!
+filetype on
+filetype plugin on
+filetype indent on     " required!
 
 " Enhance command-line completion
 set wildmenu
@@ -108,6 +135,8 @@ colorscheme solarized
 
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline 
 let Powerline_symbols = 'fancy'
+
+let g:airline_powerline_fonts = 1 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
@@ -130,13 +159,37 @@ nnoremap <leader><leader> <c-^>
 " Map %% to the current directory path
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 " Edit or view files in same directory as current file
-map <leader>e :edit %%
-map <leader>v :view %%
+" map <leader>e :edit %%
+" map <leader>v :view %%
 " Surround currently selected word with quotes
 nnoremap <Leader>" viw<esc>a"<esc>hbi"<esc>lel
 
 " Display taglist
 nnoremap <C-t> :TlistToggle<cr><c-w>j
+
+" Edit vimrc
+nnoremap <leader>ve :vsplit $MYVIMRC<cr>
+" Source vimrc
+nnoremap <leader>vs :source $MYVIMRC<cr>
+
+" toggle word under cursor between upper and lower case
+nnoremap <leader>ct viw~
+" make word under cursor upper case
+nnoremap <leader>cu viwU
+" make word under cursor lowe case
+nnoremap <leader>cl viwu
+
+nnoremap <leader>cc <esc>:call WordToCamelCase()<cr>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" REFACTORING TOOLS
+" Switch to camel case
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! WordToCamelCase()
+    let currentWord = expand("<cword>")
+    let cased = substitute(currentWord, '_\(\l\)', '\u\1', 'g')
+    exe "normal viwx"
+    exe "normal i" . cased
+endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -159,18 +212,18 @@ endfunction
 autocmd FileType xml,html,php vnoremap <Buffer> <localleader>w <Esc>:call VisualHTMLTagWrap()<CR>
 
 function! VisualHTMLTagWrap()
-  let tag = input("Tag to wrap block: ")
-  if len(tag) > 0
-    normal `>
-    if &selection == 'exclusive'
-      exe "normal i</".tag.">"
-    else
-      exe "normal a</".tag.">"
+    let tag = input("Tag to wrap block: ")
+    if len(tag) > 0
+        normal `>
+        if &selection == 'exclusive'
+            exe "normal i</".tag.">"
+        else
+            exe "normal a</".tag.">"
+        endif
+        normal `<
+        exe "normal i<".tag.">"
+        normal `<
     endif
-    normal `<
-    exe "normal i<".tag.">"
-    normal `<
-  endif
 endfunction
 
 
