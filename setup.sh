@@ -15,7 +15,7 @@ if [ ! -d "~/.vim/bundle" ]; then
     mkdir -p ~/.vim/bundle
 fi
 
-fi [ ! -d "~/.vim/bundle/vundle" ]; then
+if [ ! -d "~/.vim/bundle/vundle" ]; then
     echo "Installing Vim plugin Vundle"
     git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 fi
